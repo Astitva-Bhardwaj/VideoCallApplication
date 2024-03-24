@@ -7,12 +7,41 @@
 <body>
 <h1>Meeting Page</h1>
 <!-- Buttons for Join Now and Present -->
-<form action="#" th:action="@{/video/join}" method="post">
-    <button type="submit" name="joinNow" value="Join Now">Join Now</button>
+<form id="joinNowForm" action="#" th:action="@{/user/video/join}" method="post">
+    <input type="hidden" id="cameraAccessInput" name="cameraAccess" value="">
+    <button type="submit" id="joinNowBtn" name="joinNow" value="Join Now">Join Now</button>
 </form>
 
 <form action="#" th:action="@{/video/present}" method="post">
     <button type="submit" name="present" value="Present">Present</button>
 </form>
+
+<!-- Include JavaScript code -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const joinNowBtn  = document.getElementById('joinNowBtn');
+        const cameraAccessInput = document.getElementById('cameraAccessInput');
+
+
+        joinNowBtn.addEventListener('click', async function (event) {
+            event.preventDefault(); // Prevent the default form submission
+
+            try {
+                // Request access to the user's camera
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                cameraAccessInput.value = 'true';
+                // If access is granted, log a success message
+                console.log('Camera access granted:', stream);
+            } catch (error) {
+                // Handle errors, such as permission denied
+                console.error('Error accessing camera:', error);
+                cameraAccessInput.value = 'false';
+            }
+
+            // Now you can submit the form programmatically or perform other actions
+            joinNowForm.submit();
+        });
+    });
+</script>
 </body>
 </html>

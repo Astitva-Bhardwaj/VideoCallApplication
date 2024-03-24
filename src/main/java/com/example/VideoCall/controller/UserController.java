@@ -76,4 +76,19 @@ public class UserController {
     }
 
 
+    @PostMapping("/video/join")
+    public String joinVideoCall(HttpServletRequest request) {
+        // Retrieve the camera access status from the request parameter
+        String cameraAccess = request.getParameter("cameraAccess");
+        log.info("## /video/join -- cameraAccess "+ cameraAccess);
+        if ("true".equals(cameraAccess)) {
+            // Camera access granted, redirect to the meeting page
+            return "camera";
+        } else {
+            // Camera access not granted, redirect to an error page or handle as needed
+            return "redirect:/error";
+        }
+    }
+
+
 }

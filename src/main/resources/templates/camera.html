@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Camera Access</title>
+  <style>
+        #videoContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        video {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+</head>
+<body>
+<div id="videoContainer">
+  <video id="videoElement" autoplay></video>
+</div>
+
+<script>
+        document.addEventListener('DOMContentLoaded', async function () {
+            try {
+                // Request access to the user's camera
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+                // Get the video element from the DOM
+                const videoElement = document.getElementById('videoElement');
+
+                // Set the video stream as the source for the video element
+                videoElement.srcObject = stream;
+            } catch (error) {
+                // Handle errors, such as permission denied
+                console.error('Error accessing camera:', error);
+            }
+        });
+    </script>
+</body>
+</html>
