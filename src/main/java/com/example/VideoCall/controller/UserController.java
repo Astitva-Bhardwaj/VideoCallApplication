@@ -90,5 +90,22 @@ public class UserController {
         }
     }
 
+    @PostMapping("/video/present")
+    public String presentScreen(HttpServletRequest request) {
+        // Retrieve the screen present status from the request parameter
+        String screenPresent = request.getParameter("screenPresent");
+        log.info("## /video/present -- screenPresent " + screenPresent);
+        if ("true".equals(screenPresent)) {
+            // Screen presentation requested, handle the logic to present the screen
+            // This could involve starting a screen sharing session or similar functionality
+            // For demonstration purposes, we will simply return a success message
+            return "screen_present_success";
+        } else {
+            // Screen presentation not requested, redirect to an error page or handle as needed
+            return "redirect:/error";
+        }
+    }
+
+
 
 }

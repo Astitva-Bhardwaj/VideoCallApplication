@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Screen Sharing</title>
+</head>
+<body>
+<h1>Screen Sharing</h1>
+
+<!-- Video element to display the shared screen -->
+<video id="sharedScreen" autoplay></video>
+
+<!-- Button to start sharing the screen -->
+<button id="startSharingBtn">Start Sharing</button>
+
+<!-- Include JavaScript code -->
+<script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const startSharingBtn = document.getElementById('startSharingBtn');
+            const sharedScreen = document.getElementById('sharedScreen');
+
+            // Function to start sharing the screen
+            async function startSharingScreen() {
+                try {
+                    // Request access to the user's screen
+                    const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+
+                    // Attach the screen stream to the video element
+                    sharedScreen.srcObject = stream;
+
+                    // Log a success message
+                    console.log('Screen sharing started:', stream);
+                } catch (error) {
+                    // Handle errors, such as permission denied
+                    console.error('Error sharing screen:', error);
+                }
+            }
+
+            // Add click event listener to the Start Sharing button
+            startSharingBtn.addEventListener('click', async function () {
+                await startSharingScreen(); // Start sharing the screen when the button is clicked
+            });
+        });
+    </script>
+</body>
+</html>
