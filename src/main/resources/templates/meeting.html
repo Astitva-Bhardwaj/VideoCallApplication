@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Call Meeting</title>
+</head>
+<body>
+<h1>Create Video Call</h1>
+<form action="#" th:action="@{/user/video/create}" method="post">
+    <label for="createCallId">Call ID:</label>
+    <input type="text" id="createCallId" name="callId" required><br>
+    <!-- You can add more input fields for creating parameters if needed -->
+    <!-- Add a hidden input field to include loggedInUser ID if not null -->
+    <input type="hidden" id="loggedInUserId" name="loggedInUserId"
+           th:value="${loggedInUser != null ? loggedInUser.id : ''}" />
+    <input type="submit" value="Create Call">
+</form>
+
+
+<h1>Join Video Call</h1>
+<form action="#" th:action="@{/video/join}" method="post">
+    <label for="joinCallId">Enter Call ID:</label>
+    <input type="text" id="joinCallId" name="callId" required><br>
+    <!-- You can add more input fields for joining parameters if needed -->
+
+    <input type="submit" value="Join Call">
+</form>
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Video Call Meeting</title>
+</head>
+<body>
+<h1>Meeting Page</h1>
+<!-- Buttons for Join Now and Present -->
+<form action="#" th:action="@{/video/join}" method="post">
+    <button type="submit" name="joinNow" value="Join Now">Join Now</button>
+</form>
+
+<form action="#" th:action="@{/video/present}" method="post">
+    <button type="submit" name="present" value="Present">Present</button>
+</form>
+</body>
+</html>
