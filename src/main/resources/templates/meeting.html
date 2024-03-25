@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Video Call Meeting</title>
+    <link rel="stylesheet" th:href="@{/meeting.css}" />
 </head>
 <body>
 <h1>Create Video Call</h1>
@@ -18,12 +19,13 @@
 
 
 <h1>Join Video Call</h1>
-<form action="#" th:action="@{/video/join}" method="post">
+<form action="#" th:action="@{/user/video/join/call}" method="post">
     <label for="joinCallId">Enter Call ID:</label>
-    <input type="text" id="joinCallId" name="callId" required><br>
+    <input type="text" id="joinCallId" name="joinCallId" required><br>
     <!-- You can add more input fields for joining parameters if needed -->
 
     <input type="submit" value="Join Call">
 </form>
+
 </body>
 </html>

@@ -75,6 +75,22 @@ public class UserController {
         return "redirect:/user/login"; // Redirect to login page or handle as needed
     }
 
+    @PostMapping("/video/join/call")
+    public String joinVideoCall(@RequestParam String joinCallId) {
+        log.info(" ## ---- joinVideoCall");
+        // Get the Call ID from the database using the VideoCallService
+        String actualCallId = String.valueOf(videoCallService.joinVideoCall(joinCallId));
+        log.info("## UserController --- /video/join/callId "+actualCallId);
+        if (actualCallId != null) {
+            // Handle joining the video call with the retrieved Call ID
+            log.info("Joining video call with Call ID: " + actualCallId);
+            // Redirect to the meeting page or handle as needed
+            return "camera";
+        } else {
+
+            return "redirect:/error";
+        }
+    }
 
     @PostMapping("/video/join")
     public String joinVideoCall(HttpServletRequest request) {
@@ -105,7 +121,5 @@ public class UserController {
             return "redirect:/error";
         }
     }
-
-
 
 }

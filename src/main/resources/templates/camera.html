@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
   <title>Camera Access</title>
+  <link rel="stylesheet" th:href="@{/camera.css}" />
   <style>
         #videoContainer {
             display: flex;
@@ -16,15 +17,42 @@
             max-width: 100%;
             max-height: 100%;
         }
+
+      .micButton {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      padding: 10px;
+      background-color: #ffffff;
+      color: #333333;
+      border: 1px solid #cccccc;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     </style>
 </head>
 <body>
 <div id="videoContainer">
   <video id="videoElement" autoplay></video>
+  <button class="micButton" id="micToggleButton">Mic On</button>
 </div>
 
 <script>
         document.addEventListener('DOMContentLoaded', async function () {
+            let isMicOn = true; // Flag to track microphone status
+            const micToggleButton = document.getElementById('micToggleButton');
+            const videoElement = document.getElementById('videoElement');
+
+            micToggleButton.addEventListener('click', function () {
+            isMicOn = !isMicOn; // Toggle microphone status
+
+          const audioTracks = videoElement.srcObject.getAudioTracks();
+          audioTracks.forEach(track => {
+          track.enabled = isMicOn;
+        });
+
+      micToggleButton.textContent = isMicOn ? 'Mic On' : 'Mic Off';
+    });
             try {
                 // Request access to the user's camera
                 const stream = await navigator.mediaDevices.getUserMedia({ video: true });
