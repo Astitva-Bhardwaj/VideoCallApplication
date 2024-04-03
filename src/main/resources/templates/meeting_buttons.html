@@ -4,48 +4,124 @@
     <meta charset="UTF-8">
     <title>Video Call Meeting</title>
     <link rel="stylesheet" th:href="@{/meeting_buttons.css}" />
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 10px;
+        }
+
+        #cameraContainer {
+            width: 300px;
+            height: 200px;
+            background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #cameraAccessInput {
+            display: none; /* Hide the input, we don't need to see it */
+        }
+    </style>
 </head>
 <body>
-<h1>Meeting Page</h1>
-<!-- Buttons for Join Now and Present -->
-<form id="joinNowForm" action="#" th:action="@{/user/video/join}" method="post">
-    <input type="hidden" id="cameraAccessInput" name="cameraAccess" value="">
-    <button type="submit" id="joinNowBtn" name="joinNow" value="Join Now">Join Now</button>
-</form>
+<div class="container">
+    <div id="cameraContainer">
+        <!-- Placeholder for the camera view -->
+        <video id="cameraView" width="300" height="200" autoplay muted></video>
+    </div>
 
-<form id="presentForm" action="#" th:action="@{/user/video/present}" method="post">
-    <input type="hidden" id="screenPresentInput" name="screenPresent" value="">
-    <button type="submit"  id="presentBtn" name="present" value="Present">Present</button>
-</form>
+    <div class="buttons-container">
+        <!-- Button to toggle camera -->
+        <button id="toggleCameraBtn">Toggle Camera</button>
+        <!-- Button to toggle microphone -->
+        <button id="toggleMicBtn">Toggle Mic</button>
+        <!-- Buttons for Join Now and Present -->
+        <form id="joinNowForm" action="#" th:action="@{/user/video/join}" method="post">
+            <input type="hidden" id="cameraAccessInput" name="cameraAccess" value="">
+            <button type="submit" id="joinNowBtn" name="joinNow" value="Join Now">Join Now</button>
+        </form>
+
+        <form id="presentForm" action="#" th:action="@{/user/video/present}" method="post">
+            <input type="hidden" id="screenPresentInput" name="screenPresent" value="">
+            <button type="submit" id="presentBtn" name="present" value="Present">Present</button>
+        </form>
+    </div>
+</div>
 
 <!-- Include JavaScript code -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const joinNowBtn  = document.getElementById('joinNowBtn');
+    document.addEventListener('DOMContentLoaded', async function () {
+        const joinNowBtn = document.getElementById('joinNowBtn');
         const cameraAccessInput = document.getElementById('cameraAccessInput');
-        const presentBtn = document.getElementById('presentBtn');
-        const screenPresentInput = document.getElementById('screenPresentInput');
+        const cameraView = document.getElementById('cameraView');
+        const toggleCameraBtn = document.getElementById('toggleCameraBtn');
+        const toggleMicBtn = document.getElementById('toggleMicBtn');
 
+        let isCameraOn = true;
+        let isMicOn = true;
 
-        joinNowBtn.addEventListener('click', async function (event) {
-            event.preventDefault(); // Prevent the default form submission
+        try {
+            // Request access to the user's camera and microphone
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            cameraAccessInput.value = 'true';
+            // Display the camera stream in the video element
+            cameraView.srcObject = stream;
+            // If access is granted, log a success message
+            console.log('Camera and microphone access granted:', stream);
+        } catch (error) {
+            // Handle errors, such as permission denied
+            console.error('Error accessing camera and microphone:', error);
+            cameraAccessInput.value = 'false';
+        }
 
-            try {
-                // Request access to the user's camera
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                cameraAccessInput.value = 'true';
-                // If access is granted, log a success message
-                console.log('Camera access granted:', stream);
-            } catch (error) {
-                // Handle errors, such as permission denied
-                console.error('Error accessing camera:', error);
-                cameraAccessInput.value = 'false';
+        toggleCameraBtn.addEventListener('click', function () {
+            if (isCameraOn) {
+                cameraView.srcObject.getTracks().forEach(track => {
+                    if (track.kind === 'video') {
+                        track.stop();
+                    }
+                });
+                isCameraOn = false;
+                toggleCameraBtn.textContent = 'Turn On Camera';
+            } else {
+                navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
+                    cameraView.srcObject = stream;
+                    isCameraOn = true;
+                    toggleCameraBtn.textContent = 'Turn Off Camera';
+                }).catch(error => {
+                    console.error('Error toggling camera:', error);
+                });
             }
+        });
 
+        toggleMicBtn.addEventListener('click', function () {
+            cameraView.srcObject.getAudioTracks().forEach(track => {
+                track.enabled = !track.enabled;
+            });
+            isMicOn = !isMicOn;
+            toggleMicBtn.textContent = isMicOn ? 'Mute Mic' : 'Unmute Mic';
+        });
+
+        joinNowBtn.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent the default form submission
             // Now you can submit the form programmatically or perform other actions
             joinNowForm.submit();
         });
-         presentBtn.addEventListener('click', function (event) {
+
+        const presentBtn = document.getElementById('presentBtn');
+        const screenPresentInput = document.getElementById('screenPresentInput');
+
+        presentBtn.addEventListener('click', function (event) {
             event.preventDefault(); // Prevent the default form submission
             screenPresentInput.value = 'true';
             // Submit the form to present the screen
